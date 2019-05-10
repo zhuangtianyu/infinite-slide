@@ -1,0 +1,56 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.slide {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 200px;
+}
+
+.prev, .next {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+  color: #fff;
+  margin: auto;
+  z-index: 100;
+  cursor: pointer;
+  user-select: none;
+}
+
+.prev {
+  left: 0;
+}
+
+.next {
+  right: 0;
+}
+
+.slide-container {
+  position: absolute;
+  font-size: 0;
+  left: 0;
+}
+
+.slide-item {
+  display: inline-block;
+  vertical-align: top;
+  height: 200px;
+  font-size: 14px;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+
+
+
+
+
