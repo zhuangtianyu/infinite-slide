@@ -70,6 +70,9 @@ const mount = (data) => {
   })
   Object.assign(element, { anchorList })
 
+  // 设置 slide-anchor-item active style
+  set.anchor()
+
   const length = data.length
   Object.assign(state, { length })
 }
@@ -115,10 +118,14 @@ const calculate = (step) => {
 }
 
 const move = (target, speed, step) => {
+  // clear auto interval
+  clearTimeout(autoInterval)
+
   console.time('move')
   Object.assign(state, { moving: true })
   const { index } = state
   const { container } = element
+
   // virtual interval start
   const interval = () => setTimeout(() => {
     const { offsetLeft } = container
@@ -132,11 +139,12 @@ const move = (target, speed, step) => {
       }
       // reset end
       console.timeEnd('move')
-      return set.anchor()
+      return set.anchor(), auto()
     }
     Object.assign(container.style, { left: `${offsetLeft + speed}px` })
     interval()
   }, 4)
+  // virtual interval end
   interval()
 }
 
@@ -159,8 +167,14 @@ const declare = () => {
       ? trigger(item.index - state.index)
       : void 0
   })
+}
 
-  set.anchor()
+let autoInterval = void 0
+
+const auto = () => {
+  autoInterval = setTimeout(() => {
+    trigger(1)
+  }, config.frequency)
 }
 
 /**
@@ -168,7 +182,7 @@ const declare = () => {
  * @param data      background-image[]
  * @param frequency 切换频率
  * @param duration  过渡时间
- * @param mode      模式
+ * @param mode      TODO: 模式
  * @param height    高度
  */
 
@@ -202,6 +216,14 @@ const slide = ({
 
   // declare event
   declare()
+
+  auto()
 }
+
+
+
+
+
+
 
 
