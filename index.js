@@ -71,18 +71,19 @@ const move = (target, speed, step) => {
   console.time('move')
   Object.assign(state, { moving: true })
   const { index, container } = state
-  // setInterval start
-  const interval = setInterval(() => {
+  // fake interval start
+  const interval = () => setTimeout(() => {
     const { offsetLeft } = container
     if (Math.abs(target - offsetLeft) < Math.abs(speed)) {
       Object.assign(container.style, { left: `${target}px` })
       Object.assign(state, { index: index + step, moving: false })
-      // setInterval clear
-      console.timeEnd('move')
-      return clearInterval(interval)
+      // fake interval end
+      return console.timeEnd('move')
     }
     Object.assign(container.style, { left: `${offsetLeft + speed}px` })
+    interval()
   }, 1)
+  interval()
 }
 
 const trigger = (step) => {
