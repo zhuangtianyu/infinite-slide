@@ -14,7 +14,8 @@ const element = {
   slide: void 0,
   container: void 0,
   prev: void 0,
-  next: void 0
+  next: void 0,
+  anchorList: void 0
 }
 
 const style = { width: 0, height: 0 }
@@ -31,7 +32,7 @@ const mount = (data) => {
   const { slide } = element
   const { clientWidth: width } = slide
   const { height } = style
-  // 挂载 width 到 style
+  // assign width to style
   Object.assign(style, { width })
 
   // 挂载 prev, next
@@ -59,6 +60,16 @@ const mount = (data) => {
     append(container, 'div', 'slide-item', style)
   })
 
+  // 挂载 slide-anchor
+  const anchor = append(slide, 'div', 'slide-anchor')
+
+  // 挂载 slide-anchor-item
+  const anchorList = data.map((url, index) => {
+    const klass = 'slide-anchor-item'
+    return Object.assign(append(anchor, 'span', klass), { index })
+  })
+  Object.assign(element, { anchorList })
+
   const length = data.length
   Object.assign(state, { length })
 }
@@ -80,6 +91,15 @@ const set = {
       : void 0
     const left = `${- state.index * width}px`
     Object.assign(container.style, { left })
+  },
+  anchor: () => {
+    const { anchorList } = element
+    const { index, length } = state
+    Array.from(anchorList).map(item => {
+      item.index === index
+        ? item.classList.add('active')
+        : item.classList.remove('active')
+    })
   }
 }
 
@@ -105,7 +125,14 @@ const move = (target, speed, step) => {
     if (Math.abs(target - offsetLeft) < Math.abs(speed)) {
       Object.assign(container.style, { left: `${target}px` })
       Object.assign(state, { index: index + step, moving: false })
-      return console.timeEnd('move')
+      // reset start
+      if (state.index === state.length) {
+        Object.assign(state, { index: 0 })
+        Object.assign(container.style, { left: 0 })
+      }
+      // reset end
+      console.timeEnd('move')
+      return set.anchor()
     }
     Object.assign(container.style, { left: `${offsetLeft + speed}px` })
     interval()
@@ -123,9 +150,17 @@ const trigger = (step) => {
 }
 
 const declare = () => {
-  const { prev, next } = element
+  const { prev, next, anchorList } = element
   prev.onclick = () => trigger(-1)
   next.onclick = () => trigger(1)
+
+  Array.from(anchorList).map(item => {
+    item.onclick = () => item.index !== state.index
+      ? trigger(item.index - state.index)
+      : void 0
+  })
+
+  set.anchor()
 }
 
 /**
